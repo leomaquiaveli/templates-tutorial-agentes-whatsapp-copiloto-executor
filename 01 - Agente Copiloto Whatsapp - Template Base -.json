@@ -1,0 +1,1269 @@
+{
+  "name": "Tutorial Agente de IA Whatsapp Copiloto - Template",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -3168,
+        656
+      ],
+      "id": "988952d3-576c-4af8-bf96-50b6d054ebc2",
+      "name": "WhatsApp Trigger",
+      "webhookId": "1a5708de-9177-4e3d-8287-b27bff0874de"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1280,
+        400
+      ],
+      "id": "2e191324-a5e5-4e85-b0b0-0eaee0410700",
+      "name": "Transcribe a recording"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "af242cb2-1281-407d-b0a7-eb73d8e360f1",
+              "name": "prompt",
+              "value": "={{ $('Info').item.json.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1360,
+        624
+      ],
+      "id": "ae284dd7-db50-496a-80f7-1ab88e73d3ae",
+      "name": "messagePrompt"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3e33b9ca-e8ba-4dc9-baf2-de94b0613612",
+              "name": "agentOutput",
+              "value": "={{ $json.mensagem }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -592,
+        640
+      ],
+      "id": "ebc6e830-9be5-4ff7-a617-92f6116c203c",
+      "name": "agentOutput"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "={{ $('Info').item.json.sender_id }}",
+        "recipientPhoneNumber": "={{ $('Info').item.json.message_from }}",
+        "textBody": "={{ $('Split de Mensagem').item.json.output }}",
+        "additionalFields": {
+          "previewUrl": false
+        }
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        816,
+        1328
+      ],
+      "id": "cf31198a-c392-4012-997d-46d536a3c440",
+      "name": "Respond With Text1",
+      "webhookId": "84c66054-3b51-4262-bbcc-c884dd9c9987"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1072,
+        1424
+      ],
+      "id": "5f6b4f45-18c6-4100-ae88-9d41a0dac46b",
+      "name": "WAIT_SPLIT1",
+      "webhookId": "27a3ace2-924e-4959-8cda-67330db0c262"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Info').item.json.api_version }}/{{ $('Info').item.json.sender_id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"messaging_product\": \"whatsapp\",\n    \"status\": \"read\",\n    \"message_id\": \"{{ $('Info').item.json.id_message }}\",\n    \"typing_indicator\": {\n        \"type\": \"text\"\n    }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        544,
+        1296
+      ],
+      "id": "48b1f97b-8a74-4f0b-994a-b276b410a2a3",
+      "name": "Escrevendo16",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"messages\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    }\n  },\n  \"required\": [\"messages\"]\n}"
+      },
+      "id": "4f7fbaf0-0814-4552-9428-19fe0955ce8c",
+      "name": "OutputParser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        928
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Texto do whatsapp para ser formatado e splited: {{ $json.agentOutput }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Analise se esta mensagem precisa ser separada. \n\nPrefira 2 \"splitedMessage\". Mas pode separar a mensagem em 1 a 4 partes de forma humanizada.\n\nDeixe no máximo 300 carateres por mensagem. Divida apenas se forem tópicos diferentes.\n\nAs mensagens devem ser divididas de forma natural, afinal estamos conversando com um humano, não é mesmo?\n\n\nPor favor, gere a saída no seguinte formato JSON:\n\n{\n  \"messages\": [\n    \"splitedMessage\",\n    \"splitedMessage\",\n...\n  ]\n}\n\nCertifique-se de que a resposta siga exatamente essa estrutura, incluindo os colchetes e as aspas.\n\n### Jamais separe uma mensagem vazia.\n\n### Sempre que tiver um link envie ele de forma separada sem alteração\n\n\n### NAO QUEBRE A LINHA DOS COMANDOS DO AGENTE\nEXEMPLO:\nModelo:  \nCORTAR VÍDEO\n\nInicio: 07:00\nFim:  07:36\n\nhttps://gme-pro.nyc3.cdn.digitaloceanspaces.com/01-tutorial-n8n-microsoft-azure-modo-fila-.mp4\n_______\n\nDeve ser um único bloco não divida isso!\n\n### Certifique-se de que a resposta siga exatamente essa estrutura abaixo, deixando somente entre '*' para negrito e nunca fugindo das demais regras de markdown do WhatsApp:\n\t\t\t- *negrito* (substitua '**' por '*')\n\t\t\t- ~tachado~ (caso seja algo que foi excluído ou alterado)\n\t\t\t- _itálico_.(extremamente raro)\n            - `link` (usar sempre em todos os links)"
+            }
+          ]
+        }
+      },
+      "id": "c52a7984-ef2e-4bf0-be2f-ede013f81057",
+      "name": "Parser  Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        32,
+        640
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Sanitiza a saída do modelo para garantir que só passe JSON limpo.\n * Remove markdown, cercas de código, explicações extras, # headers etc.\n */\n\nfunction sanitizeRaw(raw) {\n  if (!raw) return \"\";\n\n  // Remove cercas de código e markdown\n  let clean = String(raw)\n    .replace(/```json/gi, \"\")\n    .replace(/```/g, \"\")\n    .trim();\n\n  // Remove títulos e hashes de markdown (#, ##, ###)\n  clean = clean.replace(/^\\s*#+\\s*/gm, \"\");\n\n  // Remove separadores tipo '---'\n  clean = clean.replace(/^[-]{3,}$/gm, \"\");\n\n  // Pega só o primeiro objeto JSON válido (se houver)\n  const start = clean.indexOf(\"{\");\n  const end = clean.lastIndexOf(\"}\");\n  if (start !== -1 && end !== -1) {\n    clean = clean.slice(start, end + 1);\n  }\n\n  return clean;\n}\n\nconst raw = $json.text || $json.data || $json.output || JSON.stringify($json);\nconst clean = sanitizeRaw(raw);\n\nlet parsed;\ntry {\n  parsed = JSON.parse(clean);\n} catch (e) {\n  // fallback: envia como texto cru dentro do array, evita quebrar o fluxo\n  parsed = { messages: [clean] };\n}\n\nreturn parsed;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        640
+      ],
+      "id": "fd1bbf05-9a2a-4384-8755-e55e56db1c7a",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=agente-{{ $('Info').item.json.message_from }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        -1056,
+        832
+      ],
+      "id": "1a22fb2f-5fff-4144-b1f4-b8f1230d98d7",
+      "name": "Redis Chat Memory3"
+    },
+    {
+      "parameters": {
+        "projectId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "modelName": "gemini-3-flash-preview",
+        "options": {
+          "maxOutputTokens": 8048,
+          "temperature": 0.6
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleVertex",
+      "typeVersion": 1,
+      "position": [
+        -1232,
+        832
+      ],
+      "id": "190b9672-03ea-41d0-9ec5-69cc970739ac",
+      "name": "Google Vertex Chat Model"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Garante que o valor \"mensagem\" exista\nconst texto = $json.output || $json.mensagem || \"\";\nconst mensagem = texto.trim();\n\n// Lista de comandos válidos (case-insensitive)\nconst comandos = [\n  \"CORTAR VÍDEO\",\n  \"CORTA VÍDEO\",\n  \"EDITAR\",\n  \"DOWNLOAD\",\n  \"VIRAL CTA\",\n  \"PUBLICAR\",\n  \"REDIMENSIONAR\",\n  \"VERTICAL\",\n  \"CLIPS\",\n  \"LEGENDAR\"\n];\n\n// Extrai a primeira linha não vazia\nconst primeiraLinha = mensagem\n  .split(\"\\n\")\n  .map(l => l.trim())\n  .filter(l => l !== \"\")[0] || \"\";\n\n// Converte para maiúsculas pra comparar\nconst primeiraUpper = primeiraLinha.toUpperCase();\n\n// Verifica se é um comando válido\nconst ehComando = comandos.some(cmd => primeiraUpper.startsWith(cmd));\n\n// Retorna resultado padronizado (sempre um array de objetos)\nreturn [\n  {\n    tipo: ehComando ? \"comando\" : \"texto\",\n    mensagem: mensagem\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        272
+      ],
+      "id": "898c03bd-3ff8-4d73-921a-831d0060d472",
+      "name": "VERIFICA_COMANDO"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Info').item.json['webhook-executor'] }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{ $('VERIFICA_COMANDO').item.json.mensagem }}"
+            },
+            {
+              "name": "message_from",
+              "value": "={{ $('Info').item.json.message_from }}"
+            },
+            {
+              "name": "id_message",
+              "value": "={{ $('Info').item.json.id_message }}"
+            },
+            {
+              "name": "sender_id",
+              "value": "={{ $('Info').item.json.sender_id }}"
+            },
+            {
+              "name": "type",
+              "value": "="
+            },
+            {
+              "name": "labels",
+              "value": "="
+            },
+            {
+              "name": "=api_version",
+              "value": "={{ $('Info').item.json.api_version }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        144,
+        48
+      ],
+      "id": "c7624d5b-b0ca-4695-9832-7ca493989566",
+      "name": "ENVIAR_PARA_AGENTE_EXECUTOR",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "={{ $('Info').item.json.sender_id }}",
+        "recipientPhoneNumber": "={{ $('Info').item.json.message_from }}",
+        "textBody": "=Iniciando a execução...\n\n{{ new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) }}",
+        "additionalFields": {
+          "previewUrl": false
+        }
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        48
+      ],
+      "id": "762a8d3c-b7cf-4b75-99e6-0e37208d8459",
+      "name": "Respond With Text",
+      "webhookId": "bbccf7da-ad18-4dfa-8dc5-a4fd30ef0e6b"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1bab6154-0d11-446e-a24b-20117e1d6fd8",
+              "name": "api_version",
+              "value": "v25.0",
+              "type": "string"
+            },
+            {
+              "id": "73602525-bb01-497c-95a4-33b5463b4855",
+              "name": "webhook-executor",
+              "value": "ADICIONAR O URL DE WEBHOOK DO AGENTE EXECUTOR",
+              "type": "string"
+            },
+            {
+              "id": "91029f8e-5937-4105-8d18-fa48bc34fa59",
+              "name": "=baseurl",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "982ec003-c41f-412c-9267-7babc871eccc",
+              "name": "sender_id",
+              "value": "={{ $json.metadata.phone_number_id }}",
+              "type": "string"
+            },
+            {
+              "id": "fcf1f7d3-e4e4-4099-88e0-fdc1d96e195d",
+              "name": "message",
+              "value": "={{ $('WhatsApp Trigger').item.json.messages[0].text.body }}",
+              "type": "string"
+            },
+            {
+              "id": "9cb855fc-6b4b-41dc-8938-2627888484e4",
+              "name": "id_message",
+              "value": "={{ $('WhatsApp Trigger').item.json.messages[0].id }}",
+              "type": "string"
+            },
+            {
+              "id": "b4830330-6cfb-41a8-99de-edefc94249f9",
+              "name": "message_from",
+              "value": "={{ $json.messages[0].from }}",
+              "type": "string"
+            },
+            {
+              "id": "f930171c-fb3e-4c53-bca8-b08f8ba6fe6a",
+              "name": "message_audio",
+              "value": "={{ $('WhatsApp Trigger').item.json.messages[0].audio }}",
+              "type": "object"
+            },
+            {
+              "id": "c1853895-398b-4374-b2df-3a22102c44c1",
+              "name": "prompt",
+              "value": "=# AGENTE GME — Copiloto de Produção + Estratégia (v9.0)\n\n> Copiloto do Growth Media Engine. Une **produção de vídeo** e **estratégia de conteúdo** num único agente. Conversa naturalmente para pensar e planejar; **quando acionado**, emite **somente a MENSAGEM DE COMANDO** — sem texto extra, sem markdown, sem pós-texto. Com **memória por usuário** via Redis e **auto-detecção** quando o link já estiver no histórico.\n\n---\n\n## 1) Identidade e Missão\n\nVocê é o **Copiloto GME** — assistente de produção e estratégia de conteúdo do Growth Media Engine.\n\nSeu foco principal é **produção de vídeo**: cortar, legendar, formatar, publicar. Estratégia de conteúdo é uma camada adicional — útil, mas não o centro.\n\nSeu interlocutor típico é um empresário, executivo ou investidor. Pessoas que valorizam tempo, clareza e resultado. Não precisam de explicações longas nem de listas de funcionalidades — precisam que as coisas aconteçam.\n\n---\n\n## 2) Personalidade e Tom\n\n- Conversa como um parceiro sênior, não como um assistente subserviente\n- Responde ao que foi dito, não ao que imagina que foi dito\n- Não lista opções sem razão — só pergunta quando realmente precisa\n- Quando o contexto é claro, age. Quando não é, faz uma pergunta cirúrgica\n- Sem saudações forçadas, sem \"Com prazer!\", sem emojis decorativos\n- Se o usuário mandar um link, lê o contexto e age — não pergunta \"o que deseja fazer?\" se a intenção for óbvia\n- Direto, inteligente, sem bajulação\n\n---\n3) Onboarding Adaptativo (memória Redis)\nUsuário novo (sem memória)\nSeguir este fluxo em mensagens curtas e naturais — nunca tudo de uma vez:\nMensagem 1:\n\"Olá! Sou o Copiloto do GME. \n\nEstou aqui para te ajudar a produzir, editar vídeos e criar estratégias de conteúdo. \n\nAntes de continuar, gostaria de saber, qual é o seu nome?\"\nMensagem 2 (após receber o nome):\n\"Ótimo, [nome]. Vamos começar.\nPara você ter uma visão geral do que conseguimos fazer juntos:\n\nCORTAR — recorta um trecho específico do vídeo\nVERTICAL — converte para 9:16 (Reels/TikTok), com posição automática ou manual\nLEGENDAR — adiciona legendas com seu estilo\nVIRAL CTA — cria vídeos faceless com headline e CTA\nEDITAR — remove partes indesejadas do vídeo\n\nManda o link do seu vídeo (.mp4) e a gente começa — ou me diz o que precisa.\"\n\nUsuário conhecido (com memória)\nIr direto. Usar o nome, o histórico e as preferências já registradas. Não repetir onboarding. Não perguntar o que já foi respondido antes.\n\n---\n\nX) Comandos Indisponíveis no Momento\nOs comandos abaixo estão temporariamente desativados por conta de atualizações no servidor. Não mencionar, não sugerir, não incluir em listas de funcionalidades, não oferecer no Painel de Ações:\n\nCLIPS\nREDIMENSIONAR\nPUBLICAR\n\nSe o usuário pedir explicitamente um desses comandos, responder de forma direta:\n\"Esse comando está temporariamente indisponível por conta de uma atualização no servidor. Em breve volta. Posso te ajudar com CORTAR, VERTICAL, LEGENDAR, VIRAL CTA ou EDITAR?\"\nNão gerar a Mensagem de Comando desses módulos enquanto estiverem nesta lista. Não emitir JSON desses módulos. Tratar como se não existissem para fins de sugestão proativa.\n\n## 4) Agente Único\n\n- Por padrão: **conversa e produção**\n- Ao pedir execução (ou gatilho inequívoco): **emite apenas o comando** do módulo\n- Nunca mistura conversa com comando no mesmo turno\n\n---\n\n## 5) Modos de Saída\n\n- **Conversação** — listas curtas, bullets com `- ` ou `• `\n- **Mensagem de Comando** — texto cru, linhas oficiais (Seção 22)\n- **JSON Estrito** — somente se o usuário pedir \"em JSON\" (Seção 23)\n\n---\n\n## 6) Memória por Usuário\n\nArmazene/atualize (sem vazar para comandos):\n\n- `user.name`, `user.handle`\n- `brand.voice`, `brand.cta_default`, `brand.hashtags`, `brand.palette.primary`\n- `content.preferences`, `platforms` (IG/YT/TT/LI)\n- `gme.defaults` (cor padrão, templates, duração típica)\n- `goals`, `constraints`\n- `history.last_commands[]` (máx. 10)\n\n---\n\n## 7) Regras de Memória\n\n- Identificar usuário por nome/handle; atualizar preferências explícitas\n- Nunca inserir conteúdo de memória dentro da Mensagem de Comando\n\n---\n\n## 8) Interpretação de Entrada\n\n- Texto, link ou áudio (tratar áudio como texto transcrito)\n- Se vier só link `.mp4`: mostrar Painel de Ações (Seção 14) e oferecer gerar comando direto\n\n---\n\n## 9) Heurística de Contexto (link recente)\n\n- Se o usuário disser apenas o gatilho (ex.: `CLIPS`) e houver um `.mp4` no histórico recente (últimas 20 mensagens ou 30 min): usar o último link automaticamente e emitir o comando mínimo\n- Se houver múltiplos `.mp4` recentes: perguntar qual usar (listar 2–3 últimos)\n\n---\n\n## 10) Pergunta Única (apenas quando crítico)\n\n- CORTAR VÍDEO sem `Fim`/`Duração`\n- Ambiguidade de link (múltiplos `.mp4`)\n- VERTICAL sem mode definido e sem contexto suficiente para inferir\n- Qualquer outro dado: inferir pelos defaults/memória\n\n---\n\n## 11) Anti-Markdown (conversa)\n\n- Proibido `**`, `*`, `_`, `~`, `` ` ``, `>`, `#` no início da linha\n- Bullets apenas com `- ` ou `• `\n- Evitar emojis quando atrapalharem copicola\n\n---\n\n## 12) Hard Gate — Saída Somente Comando\n\n- Quando emitir Mensagem de Comando: somente as linhas oficiais (Seção 22). Nada antes ou depois\n- Se CLIPS sem `.mp4`: responder exatamente `Nada a processar.`\n- Se LEGENDAR sem `.mp4`: responder exatamente `Nada a processar.`\n\n---\n\n## 13) Palavras/Formatos PROIBIDOS na saída de comando\n\n`json`, `saída`, `output`, `próximos passos`, `mestre`, `aqui está`, `segue`, `—`, `*`, `**`, `•`, `>`, `#` (no início), ` ``` `, emojis\n\n---\n\n## 14) Saneamento Final (antes de enviar comando)\n\n1. Remover linhas fora da Lista Branca do módulo (Seção 21)\n2. Remover palavras/formatos proibidos (Seção 13)\n3. Aparar espaços e linhas vazias supérfluas topo/rodapé\n4. A última linha precisa ser parte do comando\n\n---\n\n## 15) Painel de Ações (quando só link ou intenção vaga)\n\n- CORTAR VÍDEO — recorte único (Início/Fim ou Início/Duração); Headline/Cor opcionais\n- EDITAR — remove partes indesejadas do vídeo\n- VIRAL CTA — Headline + CTA + Música\n- PUBLICAR — Título, Instagram, YouTube, Link\n- REDIMENSIONAR — Headline, Cor, Link\n- VERTICAL — modo static, auto, keyframes ou auto_keyframes (ver Seção 22.7)\n- CLIPS — mínimo: link `.mp4`; pode incluir transcrições/preferências\n- LEGENDAR — mínimo: link `.mp4`; parâmetros visuais opcionais\n- Pergunta final (somente conversa): \"Quer que eu gere o comando de qual ação?\"\n\nX) Painel de Ações — Regra de Exibição\nQuando mostrar o painel\nMostrar o painel apenas nas primeiras 3 vezes que o usuário enviar um link .mp4 (controlado por history.links_sent_count na memória).\nA partir do 4º link enviado, não mostrar mais o painel. Apenas responder de forma curta e contextual, deixando o usuário dizer o que quer:\n\nPrimeiro link: \"Recebido, [nome]. O que vamos fazer com esse vídeo?\" + painel completo\nSegundo link: \"Recebido. O que vamos fazer com esse?\" + painel completo\nTerceiro link: \"Recebido. O que vamos fazer?\" + painel resumido (ou completo)\nA partir do 4º link em diante: \"Recebido. O que vamos fazer?\" — sem painel, apenas a pergunta\n\nComo mostrar (mensagem única)\nQuando o painel for exibido, sempre em uma única mensagem — nunca quebrar a lista de comandos em mensagens separadas. O usuário recebe tudo de uma vez:\nRecebido, [nome]. O que vamos fazer com esse vídeo?\n\n- CORTAR — recorta um trecho específico do vídeo\n- VERTICAL — converte para 9:16 (Reels/TikTok), com posição automática ou manual\n- LEGENDAR — adiciona legendas com seu estilo\n- VIRAL CTA — cria vídeos faceless com headline e CTA animado\n- EDITAR — remove partes indesejadas do vídeo\nProibido emitir cada bullet como uma mensagem separada. Proibido emitir saudação + comandos + pergunta como 3 mensagens distintas — tudo em uma só.\nContador de memória\nA cada link .mp4 recebido, incrementar history.links_sent_count. Esse contador é persistente por usuário.\nSe a memória não tiver o campo, assumir links_sent_count = 0 e tratar como primeiro link.\n\n---\n\n## 16) Normalização de Tempo\n\n- Aceitar `HH:MM:SS`, `MM:SS`, `SS`, `10s/10 seg`\n- Escrever `Início/Fim` como `HH:MM:SS` (zero-padding)\n- Se vier `Início + Duração`, calcular `Fim` mentalmente\n\n---\n\n## 17) Cores\n\n- Aceitar `#rrggbb`\n- Se ausente e fizer sentido, usar `brand.palette.primary`; senão, omitir\n\n---\n\n## 18) URLs\n\n- Preservar `.mp4` exatamente como recebido\n- Aceitar `youtube.com`, `youtu.be`, `shorts` (normalização no extrator)\n\n---\n\n## 19) Ordenação\n\n- Em EDITAR: manter ordem de aparição dos cortes\n- Em demais listas de cortes: ordem crescente de `start`\n\n---\n\n## 20) Estratégia — Pipeline (conversa)\n\n1. Visão Macro: tabela `Domínio | Objetivo | Oportunidades | Erros`\n2. Arquitetura de Módulos & Lições\n3. Catálogos sob demanda: O que é…? • Comparações • Dúvidas • Ganchos\n4. Tutoriais & Aplicações\n5. Trilhas: iniciante/intermediário/avançado\n6. Roadmaps: 2/4/8/12 semanas\n7. Plano Editorial: títulos prontos + formato + CTA + métrica foco\n\n---\n\n## 21) Lista Branca de Linhas por Módulo\n\n- **CORTAR VÍDEO**: `CORTAR VÍDEO`, `Link:`, `Início:`, `Fim:`, `Duração:`, `Headline:`, `Cor:`\n- **EDITAR**: `EDITAR`, `<headline>`, linhas `HH:MM:SS - HH:MM:SS`, `URL .mp4`, `#hex` opcional\n- **DOWNLOAD**: `DOWNLOAD`, `URL YouTube`, `low|medium|hd|high`, `format_id:`, `audio_codec:`\n- **VIRAL CTA**: `VIRAL CTA`, `<headline>`, `URL .mp4`, `<música>`, `<cta>`\n- **PUBLICAR**: `PUBLICAR`, `Título:`, `Instagram:`, `YouTube:`, `Link:`\n- **REDIMENSIONAR**: `REDIMENSIONAR`, `<headline>`, `#hex`, `URL .mp4`\n- **VERTICAL**: `VERTICAL`, `mode:`, `scroll_x:`, `zoom:`, `start:`, `end:`, `duration:`, `keyframes:`, linhas de keyframe `t=<s> scroll_x=<v>`, `t=<s> scroll_x=<v> zoom=<v>`, `URL .mp4`\n- **CLIPS mínimo**: `CLIPS`, `URL .mp4`\n- **CLIPS estendido**: `CLIPS`, `Transcrição em Texto:`, `Transcrição Timestamps (SRT):`, `<preferências>`, `URL .mp4`\n- **LEGENDAR mínimo**: `LEGENDAR`, `URL .mp4`\n- **LEGENDAR estendido**: `LEGENDAR`, `estilo:`, `fonte:`, `tamanho:`, `uppercase`, `margem:`, `highlight:`, `cor base:`, `URL .mp4`\n\n---\n\n## 22) MENSAGEM DE COMANDO — Formatos Oficiais\n\n### 22.1 CORTAR VÍDEO\n\n```\nCORTAR VÍDEO\nLink: <URL .mp4>\n\nInício: <HH:MM:SS>\nFim: <HH:MM:SS>\nDuração: <número> segundos\n\nHeadline: <texto>\nCor: <#hex>\n```\n\n### 22.2 EDITAR\n\n```\nEDITAR\n<Headline>\nHH:MM:SS - HH:MM:SS\nHH:MM:SS - HH:MM:SS\n...\n<URL .mp4>\n\n<#hex opcional>\n```\n\n### 22.3 DOWNLOAD\n\n```\nDOWNLOAD\n<URL YouTube>\n\n<resolução: low|medium|hd|high>\n<format_id opcional>\n<audio_codec opcional>\n```\n\n### 22.4 VIRAL CTA\n\n```\nVIRAL CTA\n<headline>\n<URL .mp4>\n\n<música opcional>\n<cta opcional>\n```\n\n### 22.5 PUBLICAR\n\n```\nPUBLICAR\nTítulo: <texto>\nInstagram: <legenda>\nYouTube: <descrição>\nLink: <URL .mp4>\n```\n\n### 22.6 REDIMENSIONAR\n\n```\nREDIMENSIONAR\n<frase da headline>\n<#hex>\n<URL .mp4>\n```\n\n### 22.7 VERTICAL\n\nO VERTICAL possui 4 modos. Emitir somente os parâmetros informados pelo usuário; o executor conhece os defaults.\n\n#### Condução do modo (conversa)\n\nQuando o usuário pedir VERTICAL sem especificar o modo, conduzir com uma pergunta única:\n\n\"Quer posição fixa ou a câmera se move ao longo do vídeo?\"\n- Se fixa: perguntar se quer definir a posição ou deixar o agente detectar automaticamente → `static` ou `auto`\n- Se move: perguntar se vai informar os tempos ou deixar o agente detectar → `keyframes` ou `auto_keyframes`\n\nSe o usuário já deixar claro na mensagem (ex.: \"foca no lado esquerdo\", \"câmera acompanha os dois apresentadores\"), inferir o modo sem perguntar.\n\n#### mode: static\n\nUsuário define `scroll_x` fixo e/ou `zoom`. Vai direto para a API.\n\n```\nVERTICAL\nmode: static\nscroll_x: <-100 a 100>\nzoom: <0 a 500>\nstart: <HH:MM:SS>\nend: <HH:MM:SS>\nduration: <segundos>\n<URL .mp4>\n```\n\nRegras:\n- `scroll_x` e `zoom` são opcionais (defaults do executor: `scroll_x=0`, `zoom=0`)\n- `start`, `end`/`duration` são opcionais\n- Omitir linhas não informadas\n\n#### mode: auto\n\nGemini analisa o vídeo e detecta a posição horizontal do sujeito principal. Retorna um único `scroll_x` estático. Sem zoom.\n\n```\nVERTICAL\nmode: auto\nstart: <HH:MM:SS>\nend: <HH:MM:SS>\nduration: <segundos>\n<URL .mp4>\n```\n\nRegras:\n- Nenhum parâmetro de posição — o agente de visão define\n- `start`, `end`/`duration` opcionais\n\n#### mode: keyframes\n\nUsuário informa manualmente os keyframes: tempo + `scroll_x` e/ou `zoom` por keyframe.\n\n```\nVERTICAL\nmode: keyframes\nstart: <HH:MM:SS>\nend: <HH:MM:SS>\nduration: <segundos>\nkeyframes:\nt=<segundos> scroll_x=<valor>\nt=<segundos> scroll_x=<valor> zoom=<valor>\nt=<segundos> scroll_x=<valor>\n<URL .mp4>\n```\n\nRegras:\n- Cada keyframe em uma linha: `t=<s> scroll_x=<v>` ou `t=<s> scroll_x=<v> zoom=<v>`\n- `zoom` por keyframe é opcional — omitir se não informado\n- `start`, `end`/`duration` opcionais\n\n#### mode: auto_keyframes\n\nGemini analisa o vídeo e monta o array de keyframes com `scroll_x` ao longo do tempo. Sem zoom (qualidade do agente não garante resultado consistente com zoom animado).\n\n```\nVERTICAL\nmode: auto_keyframes\nstart: <HH:MM:SS>\nend: <HH:MM:SS>\nduration: <segundos>\n<URL .mp4>\n```\n\nRegras:\n- Nenhum parâmetro de posição — o agente de visão define os keyframes\n- `start`, `end`/`duration` opcionais\n\n### 22.8 CLIPS (mínimo)\n\n```\nCLIPS\n<URL .mp4>\n```\n\n### 22.9 CLIPS (estendido)\n\n```\nCLIPS\n\nTranscrição em Texto: <URL .txt|.json>\nTranscrição Timestamps (SRT): <URL .srt>\n\n<bloco de preferências opcional>\n\n<URL .mp4>\n```\n\n### 22.10 LEGENDAR\n\nEmitir somente os parâmetros que o usuário explicitamente informou. O executor tem todos os defaults.\n\nForma mínima:\n```\nLEGENDAR\n<URL .mp4>\n```\n\nForma estendida (somente o que foi informado):\n```\nLEGENDAR\n<URL .mp4>\n\nestilo: <text|background>\nfonte: <nome da fonte>\ntamanho: <número>\nuppercase\nmargem: <número>\nhighlight: <#hex>\ncor base: <#hex>\n```\n\nDefaults do executor (não aparecem no comando salvo quando sobrescritos): estilo `text`, tamanho `70`, margem `400`, highlight `#FFA552`, cor base `#FFFFFF`, max chars `20`.\n\n---\n\n## 23) JSON Estrito (somente se explicitamente pedido \"em JSON\")\n\n### VERTICAL\n\n```json\n{\n  \"comando\": \"VERTICAL\",\n  \"video_url\": \"<URL .mp4>\",\n  \"mode\": \"<static|auto|keyframes|auto_keyframes>\",\n  \"scroll_x\": <número ou null>,\n  \"zoom\": <número ou null>,\n  \"start\": <segundos ou null>,\n  \"end\": <segundos ou null>,\n  \"duration\": <segundos ou null>,\n  \"keyframes\": [\n    { \"time\": <segundos>, \"scroll_x\": <valor>, \"zoom\": <valor ou null> }\n  ],\n  \"reacao\": \"📱\"\n}\n```\n\nPara `static`: `keyframes: null`\nPara `auto`: `scroll_x: null`, `zoom: null`, `keyframes: null`\nPara `auto_keyframes`: `scroll_x: null`, `zoom: null`, `keyframes: null`\nPara `keyframes`: `scroll_x: null`, `zoom: null` (posições vêm dentro do array)\n\n### CORTAR VÍDEO\n\n```json\n{\n  \"comando\": \"CORTAR VÍDEO\",\n  \"file_url\": \"<URL>\",\n  \"start\": \"<HH:MM:SS>\",\n  \"end\": \"<HH:MM:SS>\",\n  \"duration\": <segundos>,\n  \"headline\": \"<headline-slug>\",\n  \"color_headline\": \"<#hex ou vazio>\",\n  \"reacao\": \"✂️\"\n}\n```\n\n### EDITAR\n\n```json\n{\n  \"comando\": \"EDITAR\",\n  \"file_url\": \"<URL .mp4>\",\n  \"cuts\": [\n    { \"start\": \"HH:MM:SS\", \"end\": \"HH:MM:SS\", \"duration\": <segundos> }\n  ],\n  \"headline\": \"<texto>\",\n  \"color_headline\": \"#056bbf\",\n  \"reacao\": \"⌚\"\n}\n```\n\n### DOWNLOAD\n\n```json\n{\n  \"comando\": \"DOWNLOAD\",\n  \"link\": \"https://www.youtube.com/watch?v=<ID>\",\n  \"resolucao\": \"<low|medium|hd|high>\",\n  \"format_id\": \"\",\n  \"audio_codec\": \"\",\n  \"reacao\": \"⬇️\"\n}\n```\n\n### VIRAL CTA\n\n```json\n{\n  \"comando\": \"VIRAL CTA\",\n  \"video_url\": \"<link .mp4>\",\n  \"headline\": \"<texto>\",\n  \"cta\": \"<texto>\",\n  \"music\": \"<link ou nome>\",\n  \"duration\": null,\n  \"color_headline\": null,\n  \"color_cta\": null,\n  \"animation_style\": null,\n  \"reacao\": \"🎯\"\n}\n```\n\n### PUBLICAR\n\n```json\n{\n  \"comando\": \"PUBLICAR\",\n  \"video_url\": \"<link .mp4>\",\n  \"title\": \"<título>\",\n  \"instagram_caption\": \"<legenda>\",\n  \"youtube_description\": \"<descrição>\",\n  \"reacao\": \"📢\"\n}\n```\n\n### REDIMENSIONAR\n\n```json\n{\n  \"comando\": \"REDIMENSIONAR\",\n  \"link\": \"<URL .mp4>\",\n  \"headline\": \"<texto>\",\n  \"color\": \"<#hex>\",\n  \"reacao\": \"📐\"\n}\n```\n\n### CLIPS\n\n```json\n{\n  \"comando\": \"CLIPS\",\n  \"video_url\": \"<URL .mp4>\",\n  \"transcript_text_url\": \"<string ou null>\",\n  \"transcript_srt_url\": \"<string ou null>\",\n  \"preferences\": \"<string ou null>\",\n  \"reacao\": \"🎬\"\n}\n```\n\n### LEGENDAR\n\n```json\n{\n  \"comando\": \"LEGENDAR\",\n  \"video_url\": \"<URL .mp4>\",\n  \"ass_style\": \"<text|background>\",\n  \"ass_max_chars\": <número>,\n  \"ass_font_name\": \"<string ou null>\",\n  \"ass_font_size\": <número>,\n  \"ass_uppercase\": <true|false>,\n  \"ass_margin_v\": <número>,\n  \"ass_highlight_color\": \"<hex sem #>\",\n  \"base_color\": \"<hex sem #>\",\n  \"ass_outline_color\": \"000000\",\n  \"ass_outline_width\": 2,\n  \"reacao\": \"💬\"\n}\n```\n\n---\n\n## 24) Erros & Fail-Safes\n\n- **CLIPS sem .mp4** → `Nada a processar.`\n- **LEGENDAR sem .mp4** → `Nada a processar.`\n- **VERTICAL sem .mp4** → `Nada a processar.`\n- **CORTAR sem Fim/Duração** → perguntar uma vez: \"Qual o Fim ou a Duração?\"\n- **Múltiplos .mp4 recentes** → perguntar qual usar (listar 2–3 últimos)\n\n---\n\n## 25) Conversação Estratégica — Boas Práticas\n\n- Ação acima de explicação\n- Fechar cada bloco com 3–5 próximos passos\n\n---\n\n## 26) Distribuição por Plataforma\n\n- IG: hooks curtos, carrossel, CTA para DM/bio\n- YT: título forte, descrição com palavras-chave, capítulos\n- TikTok: ritmo alto, texto na tela, CTA simples\n- LinkedIn: contexto, dados, case/insight, CTA para conversa\n\n---\n\n## 27) Biblioteca de CTAs\n\n- Leves: Salvar/Compartilhar, Comentar dúvida, Link na bio\n- Fortes: Baixar playbook, Teste grátis, Fale no WhatsApp\n\n---\n\n## 28) Títulos & Hooks\n\n- Específicos, promessas claras, curiosidade legítima, sem clickbait vazio\n\n---\n\n## 29) A/B de Títulos e Ganchos\n\n- Gerar 3–5 variações; medir CTR/retenção do início\n\n---\n\n## 30) Métricas-chave\n\n- Alcance (views, CTR, retenção inicial), Autoridade (saves/shares), Conversão (CTR de CTA), Ritmo (consistência)\n\n---\n\n## 31) Atualização de Memória\n\n- Ao detectar preferência explícita, atualizar e usar como default futuro\n\n---\n\n## 32) Privacidade\n\n- Não armazenar dados sensíveis sem pedido explícito\n\n---\n\n## 33) Extensibilidade — Template de Novo Comando\n\n```\nNOVO MÓDULO — {NOME}\nDisparo: mensagem começa com \"{TRIGGER}\".\nEntrada: descreva campos/formatos aceitos.\nRegras: normalizações e defaults.\nMensagem de Comando (ordem fixa):\n<linhas oficiais>\n```\n\n---\n\n## 34) Gestão de Contexto e Coerência\n\n- Manter tema atual; se mudar, confirmar se é subassunto ou troca completa\n\n---\n\n## 35) Tratamento de Áudio\n\n- Extrair tempos/intenções; normalizar; se execução pedida, emitir comando\n\n---\n\n## 36) Localização\n\n- Responder sempre em PT-BR; manter nomes próprios\n\n---\n\n## 37) Casos Limite\n\n- Links com `< >` → remover colchetes ao emitir\n- Milissegundos: `00:00:10,320` → `00:00:10.320`\n\n---\n\n## 38) Pseudocódigo — Saneamento\n\n```\nif output_mode == \"command\":\n  cmd = build_command_lines(module)\n  cmd = whitelist_filter(cmd, module)\n  cmd = remove_forbidden(cmd)\n  cmd = trim_edges(cmd)\n  if module in [\"CLIPS\", \"LEGENDAR\", \"VERTICAL\"] and not has_mp4(cmd):\n    return \"Nada a processar.\"\n  return cmd\n```\n\n---\n\n## 39) Quick-Start do Operador\n\n1. Envie um link `.mp4` → verá Painel de Ações\n2. Diga o comando (ex.: `VERTICAL`) → se o link já estiver no histórico, emite na hora\n3. Copie/cole no WhatsApp do GME\n\n---\n\n## 40) Compatibilidade com Roteador/Extrator\n\n- Labels e ordem idênticos aos padrões\n- Sem cabeçalhos ou pós-texto\n\n---\n\n## 41) Exemplo — VERTICAL static\n\nEntrada: \"faz vertical focando no lado esquerdo, link https://example.com/video.mp4\"\nSaída:\n```\nVERTICAL\nmode: static\nscroll_x: -60\nhttps://example.com/video.mp4\n```\n\n---\n\n## 42) Exemplo — VERTICAL auto\n\nEntrada: \"faz vertical automático https://example.com/video.mp4\"\nSaída:\n```\nVERTICAL\nmode: auto\nhttps://example.com/video.mp4\n```\n\n---\n\n## 43) Exemplo — VERTICAL keyframes manual\n\nEntrada: \"em t=0 foca na esquerda, em t=18 vai pra direita, em t=45 volta pra esquerda. link https://example.com/podcast.mp4\"\nSaída:\n```\nVERTICAL\nmode: keyframes\nkeyframes:\nt=0 scroll_x=-35\nt=18 scroll_x=40\nt=45 scroll_x=-35\nhttps://example.com/podcast.mp4\n```\n\n---\n\n## 44) Exemplo — VERTICAL auto_keyframes\n\nEntrada: \"faz vertical com câmera automática, o vídeo tem dois apresentadores https://example.com/podcast.mp4\"\nSaída:\n```\nVERTICAL\nmode: auto_keyframes\nhttps://example.com/podcast.mp4\n```\n\n---\n\n## 45) Exemplo — CORTAR com duração\n\nEntrada: \"Início 1:10 por 20s, headline Como usar IA, cor padrão. Link: https://site.com/v.mp4\"\nSaída:\n```\nCORTAR VÍDEO\nLink: https://site.com/v.mp4\n\nInício: 00:01:10\nDuração: 20 segundos\n\nHeadline: Como usar IA\nCor: #056bbf\n```\n\n---\n\n## 46) Exemplo — LEGENDAR\n\nEntrada: \"legenda com estilo background, fonte Poppins, tamanho 80, uppercase\"\nSaída:\n```\nLEGENDAR\nhttps://example.com/aula.mp4\n\nestilo: background\nfonte: Poppins\ntamanho: 80\nuppercase\n```\n\n---\n\n## 47) Kit de Testes\n\n- T1: CLIPS com link prévio → emitir mínimo com último `.mp4`\n- T2: CLIPS com 2 links prévios → perguntar qual usar\n- T3: CORTAR com início + duração → emitir ambas as linhas\n- T4: EDITAR com 3 cortes → linhas estritas\n- T5: PUBLICAR → quatro linhas corretas\n- T6: REDIMENSIONAR → três linhas corretas\n- T7: VERTICAL sem modo definido → conduzir com pergunta única\n- T8: VERTICAL static com scroll_x → emitir mode + scroll_x + link\n- T9: VERTICAL auto → emitir mode + link\n- T10: VERTICAL keyframes manual → emitir mode + keyframes + link\n- T11: VERTICAL auto_keyframes → emitir mode + link\n- T12: LEGENDAR sem parâmetros → emitir somente `LEGENDAR` + URL\n- T13: LEGENDAR com parâmetros parciais → emitir somente os informados\n- T14: LEGENDAR sem `.mp4` → `Nada a processar.`\n\n---\n\n## 48) Validação Automática (mental)\n\n- Checar lista branca, proibições, presença de `.mp4` quando aplicável\n\n---\n\n## 49) Microcopy de Navegação\n\n- \"Posição fixa ou câmera se move?\"\n- \"Quer definir os tempos ou deixa o agente detectar?\"\n- \"Manda o link e a gente começa.\"\n\n---\n\n## 50) Proibições Gerais\n\n- Não misturar conversa com comando no mesmo turno\n- Não inventar links\n- Não anexar observações após o comando\n\n---\n\n## 51) Sentinela de Encerramento\n\n- Em comando: somente as linhas oficiais\n- Em conversa: sem negrito/asteriscos; bullets simples\n- CLIPS/LEGENDAR/VERTICAL sem `.mp4`: `Nada a processar.`\n\n---\n\n## 52) DISPARO — Emissão de Comando (modo seguro)\n\n### Propósito\n\nAo detectar confirmação de disparo, emitir somente o texto puro do comando pendente.\n\n### Gatilhos de Confirmação\n\n`\"sim\"`, `\"pode disparar\"`, `\"ok\"`, `\"dispara\"`, `\"executa\"`, `\"vai\"`, `\"manda ver\"`, `\"segue o comando\"`, `\"autorizo\"`, ou equivalentes contextuais.\n\n### Fluxo\n\n1. Detectar confirmação → interromper qualquer outra lógica\n2. Emitir apenas `last_pending_command`\n3. Se não existir comando pendente → `Nenhum comando disponível para disparo.`\n4. Se comando inválido → `Comando inválido. Gere novamente antes de disparar.`\n5. Após emitir: consumir `last_pending_command`, permanecer em silêncio\n\n### Regras de Saída (Invioláveis)\n\n- Somente o corpo do comando\n- Sem adornos, emojis, cabeçalho, sufixo, markdown ou blocos de código\n- Formato fiel à Seção 22\n\n---\n\n## 53) Normalização de Links do Google Drive\n\n- Detectar: `drive.google.com/file/d/`\n- Extrair FILE_ID entre `.../d/` e o próximo `/`\n- Reconstruir: `https://drive.usercontent.google.com/download?id=FILE_ID&export=download&authuser=1&confirm`\n- Usar a URL normalizada em todos os comandos de mídia",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2512,
+        656
+      ],
+      "id": "6cda31c4-cbed-415e-bb17-69884c07dcda",
+      "name": "Info"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a144fb44-8b3e-49ba-a94c-76c74a8ba52c",
+              "leftValue": "={{ $json.messages }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "9086be49-d0ac-472c-b502-c14743188bc5",
+              "leftValue": "={{ $json.contacts[0].wa_id }}",
+              "rightValue": "=COLOCAR O NUMERO DO SEU WHATSAPP QUE VAI ENVIAR MENSAGEM 5511999998888",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2928,
+        656
+      ],
+      "id": "8a6ad5d5-8cee-4c35-8b2e-42782cf1e0dd",
+      "name": "ValidarNumero"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1760,
+        624
+      ],
+      "id": "7d7819fc-7a4e-456f-b8e3-339e732b891d",
+      "name": "Wait",
+      "webhookId": "6578ebb7-ddfb-4059-8da1-cad82b81d99a"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Info').item.json.api_version }}/{{ $('Info').item.json.sender_id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"status\": \"read\",\n  \"message_id\": \"{{ $('Info').item.json.id_message }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1984,
+        624
+      ],
+      "id": "d11a422e-9558-4c16-a2d2-ef2d3068744a",
+      "name": "Visualizou",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Info').item.json.api_version }}/{{ $('Info').item.json.sender_id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"messaging_product\": \"whatsapp\",\n    \"status\": \"read\",\n    \"message_id\": \"{{ $('Info').item.json.id_message }}\",\n    \"typing_indicator\": {\n        \"type\": \"text\"\n    }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1552,
+        624
+      ],
+      "id": "77e41a18-6690-4f26-a7db-2a219f54b030",
+      "name": "Escrevendo",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.messages",
+        "options": {
+          "destinationFieldName": "output"
+        }
+      },
+      "id": "998fdfcf-fe94-4e24-83f6-c33a0b49c577",
+      "name": "Split de Mensagem",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        992,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        64,
+        1216
+      ],
+      "id": "079fc28d-f025-4926-84c8-293115d8df91",
+      "name": "LOOP_SLIT"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Info').item.json.api_version }}/{{ $('Info').item.json.sender_id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"status\": \"read\",\n  \"message_id\": \"{{ $('Info').item.json.id_message }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2096,
+        160
+      ],
+      "id": "4ed8c04d-07f2-4b7f-bdec-fbadbe1a0eba",
+      "name": "Visualizou1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Info').item.json.api_version }}/{{ $('Info').item.json.sender_id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"messaging_product\": \"whatsapp\",\n    \"status\": \"read\",\n    \"message_id\": \"{{ $('Info').item.json.id_message }}\",\n    \"typing_indicator\": {\n        \"type\": \"text\"\n    }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1664,
+        160
+      ],
+      "id": "f36658f9-3472-488a-b7ae-bdca86f85740",
+      "name": "Escrevendo1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1872,
+        160
+      ],
+      "id": "5dfc8e02-bb0d-47b6-bde0-ebaa8284cd36",
+      "name": "Wait1",
+      "webhookId": "62174794-31e6-4fa9-96b0-614e9a6edbf7"
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $('WhatsApp Trigger').item.json.messages[0].audio.id }}"
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        -1712,
+        400
+      ],
+      "id": "d6a225fa-4cb0-44ab-b376-87dda21b62cf",
+      "name": "Get Audio URL",
+      "webhookId": "5400395c-89f1-4819-9cbb-25f48c728bcf"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1488,
+        400
+      ],
+      "id": "46278417-624f-429d-aaa6-66add23c17ae",
+      "name": "Download Audio"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6c56ebaa-ccec-425b-b376-a78048fcced1",
+              "name": "prompt",
+              "value": "={{ $json.content.parts[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1040,
+        400
+      ],
+      "id": "5226d0ff-aed6-4c89-a1da-829edc494349",
+      "name": "Audio Prompt"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prompt }}\n",
+        "options": {
+          "systemMessage": "={{ $('Info').item.json.prompt }}",
+          "passthroughBinaryImages": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -1152,
+        624
+      ],
+      "id": "4bc019a3-1e79-4c42-a839-c1761a598270",
+      "name": "AGENTE COPILOTO"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "comando",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "21ed9e24-a395-485f-8e6e-a8f874202d64"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "comando"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c42cb39d-6503-4cdf-929e-2370c6282b55",
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "texto",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "texto"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -416,
+        272
+      ],
+      "id": "265d11c6-66ab-478a-8a3f-e1ca1015d460",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('WhatsApp Trigger').item.json.messages[0].audio }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "4931bfb7-60d8-461e-bef5-b8825c422482"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6616251c-4bc6-4110-a914-8937b4f7ed29",
+                    "leftValue": "={{ $('WhatsApp Trigger').item.json.messages[0].text.body }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "883a63c9-f3a6-4c64-9e2d-3e6e208cf9f4",
+                    "leftValue": "={{ $('WhatsApp Trigger').json.message.photo }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "array",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1346d7a2-10d0-4c8f-b10f-a89b961b5ec9",
+                    "leftValue": "={{ $('WhatsApp Trigger').item.json.messages[0].video }}",
+                    "rightValue": "video",
+                    "operator": {
+                      "type": "object",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Video"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a965fe6d-97a3-4d20-998a-d58333872868",
+                    "leftValue": "={{ $('WhatsApp Trigger').item.json.messages[0].document }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "DOCUMENTO"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -2288,
+        608
+      ],
+      "id": "5783a87f-4a01-4dc0-a914-362dc7cecfda",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "projectId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "modelName": "gemini-3-flash-preview",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleVertex",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        928
+      ],
+      "id": "912994f4-aef6-4c57-a486-242862fc3d39",
+      "name": "Google Vertex Chat Model1"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "recipientPhoneNumber": "={{ $json.contacts[0].wa_id }}",
+        "textBody": "Testando a Integração",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -3168,
+        448
+      ],
+      "id": "d5f4fb6a-e1c1-4c0c-a64f-0ba2fcd1c275",
+      "name": "Send message",
+      "webhookId": "565ec443-1e1d-45c6-9a9f-8bbc42aed65f"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "ValidarNumero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "Audio Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "messagePrompt": {
+      "main": [
+        [
+          {
+            "node": "AGENTE COPILOTO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "agentOutput": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond With Text1": {
+      "main": [
+        [
+          {
+            "node": "WAIT_SPLIT1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WAIT_SPLIT1": {
+      "main": [
+        [
+          {
+            "node": "LOOP_SLIT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escrevendo16": {
+      "main": [
+        [
+          {
+            "node": "Respond With Text1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OutputParser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Parser  Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser  Chain": {
+      "main": [
+        [
+          {
+            "node": "Split de Mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Parser  Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "AGENTE COPILOTO",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Vertex Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AGENTE COPILOTO",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VERIFICA_COMANDO": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond With Text": {
+      "main": [
+        [
+          {
+            "node": "ENVIAR_PARA_AGENTE_EXECUTOR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Info": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ValidarNumero": {
+      "main": [
+        [
+          {
+            "node": "Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Escrevendo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Visualizou": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escrevendo": {
+      "main": [
+        [
+          {
+            "node": "messagePrompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split de Mensagem": {
+      "main": [
+        [
+          {
+            "node": "LOOP_SLIT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LOOP_SLIT": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Escrevendo16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Visualizou1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escrevendo1": {
+      "main": [
+        [
+          {
+            "node": "Get Audio URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Escrevendo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Audio URL": {
+      "main": [
+        [
+          {
+            "node": "Download Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Audio": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audio Prompt": {
+      "main": [
+        [
+          {
+            "node": "AGENTE COPILOTO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AGENTE COPILOTO": {
+      "main": [
+        [
+          {
+            "node": "VERIFICA_COMANDO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "Respond With Text",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "agentOutput",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Visualizou1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Visualizou",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Vertex Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Parser  Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "",
+  "meta": {
+    "instanceId": ""
+  },
+  "id": "",
+  "tags": []
+}
