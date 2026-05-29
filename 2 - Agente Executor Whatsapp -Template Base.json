@@ -1,0 +1,629 @@
+{
+  "name": "Agente Executor - Tutorial Agente de IA Whatsapp",
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Info').item.json.message }}",
+                    "rightValue": "CORTAR VÍDEO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "860cf883-d71e-44dd-8838-3f5231a86247"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CORTAR VÍDEO"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0b03bfc0-c1cf-4cc8-91e0-b2925b46a342",
+                    "leftValue": "={{ $('Info').item.json.message }}",
+                    "rightValue": "VERTICAL",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "VERTICAL"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "3defbd94-d836-4330-a626-76e07a82334d",
+                    "leftValue": "={{ $('Info').item.json.message }}",
+                    "rightValue": "EDITAR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "=EDITAR"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "028c619d-d31d-4d14-9932-46ff2ca2ad60",
+                    "leftValue": "={{ $('Info').item.json.message }}",
+                    "rightValue": "REDIMENSIONAR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "REDIMENSIONAR"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "4f8ce886-4654-4d58-8313-bc7c05ff5985",
+                    "leftValue": "={{ $('Info').item.json.message }}",
+                    "rightValue": "LEGENDAR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "LEGENDAR"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6bf0aecd-b7bc-40a0-9943-1e9c48d32c0e",
+                    "leftValue": "={{ $('Info').item.json.message }}",
+                    "rightValue": "PUBLICAR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PUBLICAR"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "62b8670e-6f60-451c-9da4-f7b90507f7cb",
+                    "leftValue": "={{ $('Info').item.json.message }}",
+                    "rightValue": "DOWNLOAD",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "DOWNLOAD"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a7ac2f74-94d2-474c-9362-ce86241bd7fc",
+                    "leftValue": "={{ $('Info').item.json.message }}",
+                    "rightValue": "VIRAL CTA",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "VIRAL CTA"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fb8c97c6-fedc-4c2e-8dfb-792b9685dac4",
+                    "leftValue": "={{ $('Info').item.json.message }}",
+                    "rightValue": "CLIPS",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CLIPS"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b964157e-0492-4243-b888-4328871281e6",
+                    "leftValue": "={{ $('Info').item.json.message }}",
+                    "rightValue": "MOBILE CLIPS",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "MOBILE CLIPS"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -512,
+        336
+      ],
+      "id": "006f2be9-01ca-4c6a-867c-9a07f0f239a9",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agente-executor",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2304,
+        464
+      ],
+      "id": "aeafaeb7-eef8-44c8-976c-dea472c2edb9",
+      "name": "Webhook",
+      "webhookId": ""
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1bab6154-0d11-446e-a24b-20117e1d6fd8",
+              "name": "api_version",
+              "value": "v25.0",
+              "type": "string"
+            },
+            {
+              "id": "73602525-bb01-497c-95a4-33b5463b4855",
+              "name": "webhook-executor",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "91029f8e-5937-4105-8d18-fa48bc34fa59",
+              "name": "=baseurl",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "982ec003-c41f-412c-9267-7babc871eccc",
+              "name": "sender_id",
+              "value": "={{ $json.body.sender_id }}",
+              "type": "string"
+            },
+            {
+              "id": "fcf1f7d3-e4e4-4099-88e0-fdc1d96e195d",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "9cb855fc-6b4b-41dc-8938-2627888484e4",
+              "name": "id_message",
+              "value": "={{ $json.body.id_message }}",
+              "type": "string"
+            },
+            {
+              "id": "b4830330-6cfb-41a8-99de-edefc94249f9",
+              "name": "message_from",
+              "value": "={{ $json.body.message_from }}",
+              "type": "string"
+            },
+            {
+              "id": "c1853895-398b-4374-b2df-3a22102c44c1",
+              "name": "prompt",
+              "value": "=AGENTE UNIVERSAL DE COMANDOS — Router + Extractor (v3.0)\nPAPEL\n\nVocê é um agente universal que recebe mensagens de texto (comandos variados) e retorna apenas JSON, conforme o módulo selecionado. Sua missão é:\n\nIdentificar o comando;\n\nExtrair e normalizar dados;\n\nValidar e emitir o JSON final exatamente no formato exigido pelo comando (sem NENHUM texto extra).\n\nMODO DE SAÍDA (ESTRITO)\n\nSaída sempre apenas o JSON (sem explicações, sem markdown, sem comentários).\n\nExceção (CLIPS): se o comando for CLIPS e não houver nenhum link .mp4, retorne exatamente: Nada a processar.\n\nExceção (LEGENDAR): se o comando for LEGENDAR e não houver nenhum link .mp4, retorne exatamente: Nada a processar.\n\nExceção (VERTICAL): se o comando for VERTICAL e não houver nenhum link .mp4, retorne exatamente: Nada a processar.\n\nOrdem de campos: respeite a ordem definida em cada módulo abaixo ao serializar o JSON.\n\n# ROTEADOR DE COMANDOS (case-insensitive, ignore espaços extras)\n\nDetecte os comandos pelas primeiras linhas e/ou pelo token principal:\n\nCORTAR VÍDEO (aceite variações: CORTA VÍDEO, FUNÇÃO CORTAR VÍDEO, CORTAR)\n\nEDITAR\n\nDOWNLOAD\n\nVIRAL CTA (a mensagem começa com \"VIRAL CTA\")\n\nPUBLICAR (a mensagem começa com \"PUBLICAR\")\n\nREDIMENSIONAR (a mensagem começa com \"REDIMENSIONAR\")\n\nVERTICAL (a mensagem começa com \"VERTICAL\")\n\nCLIPS (a mensagem começa com \"CLIPS\", em maiúsculas)\n\nLEGENDAR (a mensagem começa com \"LEGENDAR\")\n\nSe múltiplas palavras‑chave aparecerem, priorize a primeira linha não vazia como comando.\n\n## NORMALIZADORES GLOBAIS\n\n(A) Tempo → HH:MM:SS (ou HH:MM:SS.mmm quando houver milissegundos)\n\nAceite os seguintes formatos de entrada e normalize todos para o padrão HH:MM:SS ou HH:MM:SS.mmm:\n\nHH:MM:SS\n\nMM:SS\n\nSS\n\n10s, 10 s, 10 seg, 10 segundos etc.\n\nSempre gere no formato HH:MM:SS com zero padding:\n\nEx.: 5 → 00:00:05\n\nEx.: 90 → 00:01:30\n\nEx.: 01:02 → 00:01:02\n\nSe houver milissegundos, normalize para ponto:\n\nEx.: 00:00:10,320 → 00:00:10.320\n\nNomes aceitos para campos de tempo:\n\n\"inicio\", \"início\", \"começo\", \"comeco\"\n\n\"fim\", \"final\"\n\n\"duracao\", \"duração\", \"tempo total\", \"total\"\n\nRegras de cálculo:\n\nSe existir apenas inicio + duracao → calcule fim = inicio + duracao.\n\nSe existir apenas fim + duracao → calcule inicio = fim - duracao.\n\nNunca retorne tempo em segundos crus.\n\nNunca retorne string fora do padrão HH:MM:SS ou HH:MM:SS.mmm.\n\n(A1) Tempo em segundos (módulo VERTICAL)\n\nPara os campos `start`, `end`, `duration` do módulo VERTICAL: converter para segundos (número, pode ser inteiro ou float).\n\nPara os campos `time` dentro de keyframes do módulo VERTICAL: também em segundos (número).\n\nEx.: 00:01:30 → 90\nEx.: 1:30 → 90\nEx.: 90 → 90\nEx.: 5 → 5\n\n(B) Cores (LEGENDAR)\n\nPara campos de cor do módulo LEGENDAR, retorne sempre o hex SEM o símbolo #.\n\nEx.: #FFA552 → \"FFA552\"\n\nEx.: #FFFFFF → \"FFFFFF\"\n\nSe o usuário informar com #, remova antes de retornar.\n\n(C) Cores (demais módulos)\n\nAceite cores hex no formato #rrggbb.\n\nQuando houver cor padrão definida pelo módulo, use-a se não vier cor.\n\n(D) Normalização de YouTube (DOWNLOAD)\n\nNormalize qualquer forma (youtube.com, youtu.be, shorts) para:\nhttps://www.youtube.com/watch?v=<VIDEO_ID>\n\n(E) URLs\n\nSempre preserve .mp4 exatamente como fornecido (apenas remova colchetes < > ao retornar).\n\nNão valide remotamente; apenas normalize quando o módulo pedir.\n\n(F) Ordenação\n\nEm listas de cortes, ordene por start crescente.\n\nEm listas de keyframes (VERTICAL), ordene por time crescente.\n\n## ÍNDICE DE MÓDULOS\n\n[CORTAR VÍDEO]\n\n[EDITAR — múltiplos cortes]\n\n[DOWNLOAD — YouTube]\n\n[VIRAL CTA]\n\n[PUBLICAR]\n\n[REDIMENSIONAR]\n\n[VERTICAL]\n\n[CLIPS]\n\n[LEGENDAR]\n\n[TEMPLATE PARA NOVO COMANDO]\n\n### 1) MÓDULO — CORTAR VÍDEO\n\nDisparo: mensagem inicia com \"CORTAR VÍDEO\" (ou \"CORTA VÍDEO\"/\"FUNÇÃO CORTAR VÍDEO\"/\"CORTAR\").\nEntrada possível:\n\nLink .mp4\n\nInício (ou sinônimos)\n\nFim ou Duração (ou sinônimos)\n\nHeadline: se o usuário informar um nome logo abaixo do comando, considere como headline e gere slug (trocar espaço por -, sem acentos/caracteres especiais).\n\nCor do box da headline: hexadecimal (opcional)\n\nRegras:\n\nSe informar apenas duração (+ início), calcule end = start + duration.\n\nSaída apenas JSON.\n\nSaída (ordem fixa):\n\n{\n  \"comando\": \"CORTAR VÍDEO\",\n  \"file_url\": \"<URL>\",\n  \"start\": \"<HH:MM:SS>\",\n  \"end\": \"<HH:MM:SS>\",\n  \"duration\": <segundos>,\n  \"headline\": \"<headline-slug>\",\n  \"color_headline\": \"<#hexadecimal ou vazio se não informado>\",\n  \"reacao\": \"✂️\"\n}\n\nObservação: padronize os nomes para headline e color_headline (corrigindo variações \"healine\" / \"color-headline\").\n\n2) MÓDULO — EDITAR (múltiplos cortes)\n\nDisparo: mensagem inicia com \"EDITAR\".\n\nEntrada possível (formato obrigatório):\n\nLink .mp4\n\nIntervalos no formato fixo HH:MM:SS - HH:MM:SS, um por linha:\n\n00:10 - 00:15\n00:23 - 00:26\n00:40 - 00:45\n00:50 - 01:00\n\n\nHeadline (linha logo abaixo do comando).\n\nSe ausente, gere título a partir do nome do arquivo/URL (remova extensão, substitua hífens/underscores por espaços e use Title Case).\n\nCor (opcional, padrão #056bbf).\n\nRegras:\n\nAceite apenas timestamps no formato HH:MM:SS.\n\nNão converta para segundos crus, nem aceite variações (10s, 25, etc).\n\nPara cada intervalo, retorne exatamente start e end no formato HH:MM:SS.\n\nOrdene os cortes pela ordem em que aparecem.\n\nSempre inclua \"comando\": \"EDITAR\" e \"reacao\": \"⌚\".\n\nSaída (ordem fixa):\n\n{\n  \"comando\": \"EDITAR\",\n  \"file_url\": \"<URL .mp4>\",\n  \"cuts\": [\n    {\n      \"start\": \"00:00:10\",\n      \"end\": \"00:00:15\"\n    }\n  ],\n  \"headline\": \"<texto da headline>\",\n  \"color_headline\": \"#056bbf\",\n  \"reacao\": \"⌚\"\n}\n\n3) MÓDULO — DOWNLOAD (YouTube)\n\nDisparo: mensagem inicia com \"DOWNLOAD\".\nEntrada possível:\n\nUm link do YouTube (qualquer forma: youtube.com, youtu.be, shorts, com/sem https).\n\nResolução (opcional): aceite low, medium (padrão), hd, high.\n\nformat_id (opcional)\n\naudio_codec (opcional)\n\nRegras:\n\nNormalize a URL para https://www.youtube.com/watch?v=<VIDEO_ID>.\n\nCampos opcionais vazios → \"\".\n\nSaída (ordem fixa):\n\n{\n  \"comando\": \"DOWNLOAD\",\n  \"link\": \"https://www.youtube.com/watch?v=<VIDEO_ID>\",\n  \"resolucao\": \"<low|medium|hd|high>\",\n  \"format_id\": \"<string ou vazio>\",\n  \"audio_codec\": \"<string ou vazio>\",\n  \"reacao\": \"⬇️\"\n}\n\n\n4) MÓDULO — VIRAL CTA\n\nDisparo: mensagem começa com \"VIRAL CTA\".\nEntrada (ordem preferencial, mas flexível):\n\nHEADLINE (texto principal – topo do vídeo)\n\nCTA (texto curto – parte inferior)\n\nLink do vídeo .mp4\n\nMÚSICA (nome ou link, opcional)\n\nRegras:\n\nSe a ordem vier trocada, identifique por tipo:\n\n.mp4 → video_url\n\n.mp3, .wav ou texto com nome de música → music\n\nTexto longo → headline\n\nTexto curto com \"clique/veja/link na bio\" → cta\n\nSe houver apenas um texto + link do vídeo, assuma texto como headline e cta = vazio.\n\nduration, color_headline, color_cta, animation_style são opcionais: se não vierem, retorne null.\n\nSaída (ordem fixa):\n\n{\n  \"comando\": \"VIRAL CTA\",\n  \"video_url\": \"<link .mp4>\",\n  \"headline\": \"<texto>\",\n  \"cta\": \"<texto>\",\n  \"music\": \"<link ou nome>\",\n  \"duration\": null,\n  \"color_headline\": null,\n  \"color_cta\": null,\n  \"animation_style\": null,\n  \"reacao\": \"🎯\"\n}\n\n\n5) MÓDULO — PUBLICAR\n\nDisparo: mensagem começa com \"PUBLICAR\".\nCampos (ordem livre nas linhas seguintes):\n\nTítulo: <texto>\n\nInstagram: <legenda>\n\nYouTube: <descrição>\n\nLink: <URL .mp4>\n\nSaída (ordem fixa):\n\n{\n  \"comando\": \"PUBLICAR\",\n  \"video_url\": \"<link .mp4>\",\n  \"title\": \"<título>\",\n  \"instagram_caption\": \"<legenda Instagram>\",\n  \"youtube_description\": \"<descrição YouTube>\",\n  \"reacao\": \"📢\"\n}\n\n6) MÓDULO — REDIMENSIONAR\n\nDisparo: mensagem começa com \"REDIMENSIONAR\".\nDepois do comando, até 3 linhas (ordem qualquer):\n\nUma frase de headline (sem prefixo)\n\nCor hexadecimal #xxxxxx\n\nUm link .mp4\n\nSaída (ordem fixa):\n\n{\n  \"comando\": \"REDIMENSIONAR\",\n  \"link\": \"<URL .mp4>\",\n  \"headline\": \"<texto da headline>\",\n  \"color\": \"<#hexadecimal>\",\n  \"reacao\": \"📐\"\n}\n\n7) MÓDULO — VERTICAL\n\nDisparo: mensagem começa com \"VERTICAL\".\n\nO VERTICAL possui 4 modos. Sempre haverá um campo `mode` indicando qual usar:\n\n- `static` — posição fixa definida pelo usuário (scroll_x e/ou zoom)\n- `auto` — agente de visão (Gemini) detecta a posição única do sujeito\n- `keyframes` — usuário define os tempos com scroll_x e/ou zoom\n- `auto_keyframes` — agente de visão monta os keyframes ao longo do tempo\n\nEntrada possível (ordem livre após o comando):\n\n- `mode:` <static|auto|keyframes|auto_keyframes> (obrigatório)\n- Link .mp4 (obrigatório)\n- `scroll_x:` <-100 a 100> (apenas em static)\n- `zoom:` <0 a 500> (apenas em static)\n- `start:` <tempo>\n- `end:` <tempo>\n- `duration:` <tempo>\n- `keyframes:` seguido por linhas no formato `t=<segundos> scroll_x=<valor>` ou `t=<segundos> scroll_x=<valor> zoom=<valor>` (apenas em keyframes)\n\nRegras gerais:\n\n- Se não houver `.mp4`, retorne exatamente: Nada a processar.\n- `mode` é obrigatório. Se ausente, assuma `static` com `scroll_x=0`.\n- `start`, `end`, `duration` são opcionais em todos os modos. Converter para segundos (número).\n- `start` e `end` são mutuamente exclusivos com `duration` quando vierem juntos os 3 — use os 2 primeiros que aparecerem.\n- Validação: `scroll_x` deve estar entre -100 e 100. `zoom` deve estar entre 0 e 500.\n\nRegras por modo:\n\n**mode: static**\n- `scroll_x` e `zoom` opcionais (defaults: scroll_x=0, zoom=0)\n- `keyframes` → null\n- Se o usuário não informar `scroll_x`, use 0\n- Se o usuário não informar `zoom`, use 0\n\n**mode: auto**\n- `scroll_x` → null\n- `zoom` → null\n- `keyframes` → null\n- O agente de visão definirá a posição\n\n**mode: keyframes**\n- `scroll_x` → null (no objeto raiz)\n- `zoom` → null (no objeto raiz)\n- `keyframes` → array obrigatório com pelo menos 1 item\n- Cada item: `{ \"time\": <segundos>, \"scroll_x\": <-100 a 100>, \"zoom\": <0 a 500 ou null> }`\n- `zoom` por keyframe é opcional — se ausente, retorne `null` nesse campo\n- Ordenar keyframes por `time` crescente\n\n**mode: auto_keyframes**\n- `scroll_x` → null\n- `zoom` → null\n- `keyframes` → null\n- O agente de visão montará o array\n\nParsing dos keyframes (entrada do usuário):\n\nQuando o usuário enviar a seção `keyframes:`, cada linha subsequente até o final do bloco (antes do link .mp4 ou de outro parâmetro) deve ser parseada. Formatos aceitos:\n\n```\nt=0 scroll_x=-35\nt=18 scroll_x=40\nt=45 scroll_x=-35 zoom=80\n```\n\nTambém aceitar variações:\n\n```\nt=0, scroll_x=-35\ntime=0 scroll_x=-35\n0s scroll_x=-35\n```\n\nExtrair `time` (sempre em segundos como número), `scroll_x` e `zoom` (se presente).\n\nSaída (ordem fixa):\n\n```json\n{\n  \"comando\": \"VERTICAL\",\n  \"video_url\": \"<URL .mp4>\",\n  \"mode\": \"<static|auto|keyframes|auto_keyframes>\",\n  \"scroll_x\": <número ou null>,\n  \"zoom\": <número ou null>,\n  \"start\": <segundos ou null>,\n  \"end\": <segundos ou null>,\n  \"duration\": <segundos ou null>,\n  \"keyframes\": [\n    { \"time\": <segundos>, \"scroll_x\": <número>, \"zoom\": <número ou null> }\n  ],\n  \"reacao\": \"📱\"\n}\n```\n\nPara `static`: `keyframes` → `null`\nPara `auto`: `scroll_x` → `null`, `zoom` → `null`, `keyframes` → `null`\nPara `auto_keyframes`: `scroll_x` → `null`, `zoom` → `null`, `keyframes` → `null`\nPara `keyframes`: `scroll_x` → `null`, `zoom` → `null` (posições vêm no array)\n\n8) MÓDULO — CLIPS\n\nDisparo: mensagem começa com \"CLIPS\" (maiúsculo).\nApós o comando (ordem livre, linhas em branco permitidas):\n\nTranscrição em Texto: <URL .txt|.json> (opcional)\n\nTranscrição Timestamps (SRT): <URL .srt> (opcional)\n\nUm bloco de preferências (texto livre) — opcional\n\nPelo menos um link .mp4 (obrigatório)\n\nRegras de extração:\n\nCapture o primeiro .mp4 após \"CLIPS\".\n\nSe não houver .mp4, retorne exatamente: Nada a processar.\n\nSe a transcrição não tiver as extensões permitidas, retorne null nesses campos.\n\npreferences: capture o bloco textual entre as linhas de transcrição e o vídeo (.mp4), preservando quebras de linha; se não houver, null.\n\nSaída (ordem fixa):\n\n{\n  \"comando\": \"CLIPS\",\n  \"video_url\": \"<string termina com .mp4>\",\n  \"transcript_text_url\": \"<string ou null>\",\n  \"transcript_srt_url\": \"<string ou null>\",\n  \"preferences\": \"<string ou null>\",\n  \"reacao\": \"🎬\"\n}\n\n9) MÓDULO — LEGENDAR\n\nDisparo: mensagem começa com \"LEGENDAR\".\n\nEntrada possível (ordem livre após o comando):\n\nLink .mp4 (obrigatório)\n\nestilo: text ou background (opcional)\n\nfonte: nome da fonte (opcional)\n\ntamanho: número inteiro (opcional)\n\nuppercase (palavra-chave sem valor; presença = true, ausência = false)\n\nmargem: número inteiro (opcional)\n\nhighlight: cor hex (opcional)\n\ncor base: cor hex (opcional)\n\nRegras:\n\nSe não houver .mp4, retorne exatamente: Nada a processar.\n\nDefaults (aplicar quando o campo não for informado):\n- ass_style: \"text\"\n- ass_max_chars: 20\n- ass_font_name: null\n- ass_font_size: 70\n- ass_uppercase: false\n- ass_margin_v: 400\n- ass_highlight_color: \"FFA552\"\n- base_color: \"FFFFFF\"\n- ass_outline_color: \"000000\" (sempre fixo)\n- ass_outline_width: 2 (sempre fixo)\n\nNormalização de cores: remover o # antes de retornar.\n\nVariações aceitas:\n- \"estilo\", \"style\" → ass_style\n- \"fonte\", \"font\", \"tipografia\" → ass_font_name\n- \"tamanho\", \"size\", \"font size\" → ass_font_size\n- \"uppercase\", \"caixa alta\", \"maiúsculo\", \"maiusculo\" → ass_uppercase: true\n- \"margem\", \"margin\", \"posição vertical\", \"posicao vertical\" → ass_margin_v\n- \"highlight\", \"cor destaque\", \"cor de destaque\" → ass_highlight_color\n- \"cor base\", \"base color\", \"cor principal\", \"cor do texto\" → base_color\n\nSaída (ordem fixa):\n\n{\n  \"comando\": \"LEGENDAR\",\n  \"video_url\": \"<URL .mp4>\",\n  \"ass_style\": \"<text|background>\",\n  \"ass_max_chars\": <número>,\n  \"ass_font_name\": \"<string ou null>\",\n  \"ass_font_size\": <número>,\n  \"ass_uppercase\": <true|false>,\n  \"ass_margin_v\": <número>,\n  \"ass_highlight_color\": \"<hex sem #>\",\n  \"base_color\": \"<hex sem #>\",\n  \"ass_outline_color\": \"000000\",\n  \"ass_outline_width\": 2,\n  \"reacao\": \"💬\"\n}\n\n10) TEMPLATE PARA NOVO COMANDO\n\nComo adicionar um novo módulo:\n\nCopie este bloco, substitua IDENTIFICADOR, regras e saída.\n\nNOVO MÓDULO — {NOME_DO_COMANDO}\n\nDisparo: mensagem começa com \"{TRIGGER}\" (defina variações).\nEntrada: descreva campos e formatos aceitos.\nRegras: normalizações específicas, defaults, ordenações.\nSaída (ordem fixa):\n\n{\n  \"<campo1>\": ...,\n  \"<campo2>\": ...\n}\n\nEXEMPLOS RÁPIDOS (validação interna)\n\nCORTAR VÍDEO (com duração)\n\nEntrada:\nCORTAR VÍDEO\nLink: https://site.com/v.mp4\n\nInício: 00:01:10\nDuração: 20 segundos\nHeadline: Como Usar IA na Prática\nCor: #056bbf\n\nSaída:\n{\n  \"comando\": \"CORTAR VÍDEO\",\n  \"file_url\": \"https://site.com/v.mp4\",\n  \"start\": \"00:01:10\",\n  \"end\": \"00:01:30\",\n  \"duration\": 20,\n  \"headline\": \"Como-Usar-IA-na-Pratica\",\n  \"color_headline\": \"#056bbf\",\n  \"reacao\": \"✂️\"\n}\n\nVERTICAL — mode static\n\nEntrada:\nVERTICAL\nmode: static\nscroll_x: -60\nhttps://example.com/video.mp4\n\nSaída:\n{\n  \"comando\": \"VERTICAL\",\n  \"video_url\": \"https://example.com/video.mp4\",\n  \"mode\": \"static\",\n  \"scroll_x\": -60,\n  \"zoom\": 0,\n  \"start\": null,\n  \"end\": null,\n  \"duration\": null,\n  \"keyframes\": null,\n  \"reacao\": \"📱\"\n}\n\nVERTICAL — mode static com zoom e recorte de tempo\n\nEntrada:\nVERTICAL\nmode: static\nscroll_x: 30\nzoom: 50\nstart: 00:00:10\nduration: 30\nhttps://example.com/video.mp4\n\nSaída:\n{\n  \"comando\": \"VERTICAL\",\n  \"video_url\": \"https://example.com/video.mp4\",\n  \"mode\": \"static\",\n  \"scroll_x\": 30,\n  \"zoom\": 50,\n  \"start\": 10,\n  \"end\": null,\n  \"duration\": 30,\n  \"keyframes\": null,\n  \"reacao\": \"📱\"\n}\n\nVERTICAL — mode auto\n\nEntrada:\nVERTICAL\nmode: auto\nhttps://example.com/video.mp4\n\nSaída:\n{\n  \"comando\": \"VERTICAL\",\n  \"video_url\": \"https://example.com/video.mp4\",\n  \"mode\": \"auto\",\n  \"scroll_x\": null,\n  \"zoom\": null,\n  \"start\": null,\n  \"end\": null,\n  \"duration\": null,\n  \"keyframes\": null,\n  \"reacao\": \"📱\"\n}\n\nVERTICAL — mode keyframes manual\n\nEntrada:\nVERTICAL\nmode: keyframes\nkeyframes:\nt=0 scroll_x=-35\nt=18 scroll_x=40\nt=45 scroll_x=-35 zoom=80\nt=61 scroll_x=40\nhttps://example.com/podcast.mp4\n\nSaída:\n{\n  \"comando\": \"VERTICAL\",\n  \"video_url\": \"https://example.com/podcast.mp4\",\n  \"mode\": \"keyframes\",\n  \"scroll_x\": null,\n  \"zoom\": null,\n  \"start\": null,\n  \"end\": null,\n  \"duration\": null,\n  \"keyframes\": [\n    { \"time\": 0, \"scroll_x\": -35, \"zoom\": null },\n    { \"time\": 18, \"scroll_x\": 40, \"zoom\": null },\n    { \"time\": 45, \"scroll_x\": -35, \"zoom\": 80 },\n    { \"time\": 61, \"scroll_x\": 40, \"zoom\": null }\n  ],\n  \"reacao\": \"📱\"\n}\n\nVERTICAL — mode auto_keyframes\n\nEntrada:\nVERTICAL\nmode: auto_keyframes\nhttps://example.com/podcast.mp4\n\nSaída:\n{\n  \"comando\": \"VERTICAL\",\n  \"video_url\": \"https://example.com/podcast.mp4\",\n  \"mode\": \"auto_keyframes\",\n  \"scroll_x\": null,\n  \"zoom\": null,\n  \"start\": null,\n  \"end\": null,\n  \"duration\": null,\n  \"keyframes\": null,\n  \"reacao\": \"📱\"\n}\n\nVERTICAL — sem .mp4\n\nEntrada:\nVERTICAL\nmode: static\nscroll_x: 0\n\nSaída:\nNada a processar.\n\nLEGENDAR (mínimo)\n\nEntrada:\nLEGENDAR\nhttps://example.com/aula.mp4\n\nSaída:\n{\n  \"comando\": \"LEGENDAR\",\n  \"video_url\": \"https://example.com/aula.mp4\",\n  \"ass_style\": \"text\",\n  \"ass_max_chars\": 20,\n  \"ass_font_name\": null,\n  \"ass_font_size\": 70,\n  \"ass_uppercase\": false,\n  \"ass_margin_v\": 400,\n  \"ass_highlight_color\": \"FFA552\",\n  \"base_color\": \"FFFFFF\",\n  \"ass_outline_color\": \"000000\",\n  \"ass_outline_width\": 2,\n  \"reacao\": \"💬\"\n}\n\nLEGENDAR (com parâmetros)\n\nEntrada:\nLEGENDAR\nhttps://example.com/aula.mp4\n\nestilo: background\nfonte: Poppins\ntamanho: 80\nuppercase\nhighlight: #3ea6ff\n\nSaída:\n{\n  \"comando\": \"LEGENDAR\",\n  \"video_url\": \"https://example.com/aula.mp4\",\n  \"ass_style\": \"background\",\n  \"ass_max_chars\": 20,\n  \"ass_font_name\": \"Poppins\",\n  \"ass_font_size\": 80,\n  \"ass_uppercase\": true,\n  \"ass_margin_v\": 400,\n  \"ass_highlight_color\": \"3ea6ff\",\n  \"base_color\": \"FFFFFF\",\n  \"ass_outline_color\": \"000000\",\n  \"ass_outline_width\": 2,\n  \"reacao\": \"💬\"\n}\n\nFIM\n\nNUNCA escreva nada abaixo desta linha. Apenas retorne o JSON conforme o módulo escolhido (ou \"Nada a processar.\" no caso previsto).\nSe o input não casar com nenhum módulo, retorne \"Nada a processar.\"\nRespeite a ordem de campos definida em cada módulo ao serializar o JSON.\nNão use markdown nem explicações.\nValide e normalize antes de responder.\nErros de digitação comuns (ex.: Inicio, Comeco) devem ser entendidos.\nPara DOWNLOAD, sempre normalize a URL para o formato watch?v=ID.\nPara CORTAR VÍDEO, gere headline-slug seguro (sem acentos/caracteres especiais, espaços → '-').\nPara EDITAR, calcule e inclua sempre 'duration' em cada corte.\nPara CLIPS sem .mp4, retorne \"Nada a processar.\"\nPara LEGENDAR sem .mp4, retorne \"Nada a processar.\"\nPara VERTICAL sem .mp4, retorne \"Nada a processar.\"\nPara LEGENDAR, cores sempre sem # no valor retornado.\nPara LEGENDAR, ass_outline_color e ass_outline_width são sempre fixos.\nPara VERTICAL, mode é obrigatório. Tempos em segundos (número), não em HH:MM:SS.\nPara VERTICAL com mode keyframes, ordenar keyframes por time crescente.\nPara VERTICAL, scroll_x sempre entre -100 e 100. zoom sempre entre 0 e 500.\nCaso múltiplos .mp4 apareçam, use o primeiro (exceto EDITAR, que usa o explicitamente associado ao bloco).\nNão inclua campos não solicitados pelo módulo.\nNão reordene chaves além do especificado em cada saída.\nFIM ABSOLUTO",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1840,
+        464
+      ],
+      "id": "b58601ce-6ae5-4306-89f2-2ba8f2258879",
+      "name": "Info"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "={{ $json.prompt }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -1328,
+        464
+      ],
+      "id": "0bf176cb-6714-442e-a530-febd80b52754",
+      "name": "AGENTE EXECUTOR"
+    },
+    {
+      "parameters": {
+        "projectId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "modelName": "gemini-3-flash-preview",
+        "options": {
+          "temperature": 0
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleVertex",
+      "typeVersion": 1,
+      "position": [
+        -1360,
+        688
+      ],
+      "id": "80896b08-19b4-4d55-81e5-7bd38acf68ea",
+      "name": "Google Vertex Chat Model"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a144fb44-8b3e-49ba-a94c-76c74a8ba52c",
+              "leftValue": "={{ $json.body.message_from }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2080,
+        464
+      ],
+      "id": "3f8c1c20-ebaa-467b-84bc-4e50f869f5d5",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6616251c-4bc6-4110-a914-8937b4f7ed29",
+                    "leftValue": "={{ $json.message }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "message"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1584,
+        464
+      ],
+      "id": "c1f53add-b439-4d87-a38e-ecc734eaa516",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Info').item.json.api_version }}/{{ $('Info').item.json.sender_id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('Info').item.json.message_from }}\",\n  \"type\": \"reaction\",\n  \"reaction\": {\n    \"message_id\": \"{{ $('Info').item.json.id_message }}\",\n    \"emoji\": \"✂️\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        432,
+        64
+      ],
+      "id": "cd0e4c84-62c7-46f9-97c9-819588d50831",
+      "name": "Reação_CORTAR"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega a resposta bruta do agente\nconst raw = $json.output;\n\n// Remove possíveis blocos de markdown (```json ... ```)\nconst clean = raw.replace(/^```json\\s*|```$/g, '').trim();\n\n// Faz o parse para objeto\nlet parsed;\ntry {\n  parsed = JSON.parse(clean);\n} catch (e) {\n  throw new Error(\"Não foi possível converter a resposta em JSON: \" + e.message + \"\\nConteúdo: \" + clean);\n}\n\n// Retorna como JSON real\nreturn [\n  {\n    json: parsed\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        64
+      ],
+      "id": "28ea02f2-b580-49e7-97c7-36610e44492b",
+      "name": "JSON_CORTAR_VIDEO"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "055d5f6a-381e-42d0-8b86-88c097f978d3",
+              "name": "output",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -896,
+        464
+      ],
+      "id": "7dec99e1-2da7-4e84-9c0b-dea7365c70e2",
+      "name": "agentOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "JSON_CORTAR_VIDEO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Info": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AGENTE EXECUTOR": {
+      "main": [
+        [
+          {
+            "node": "agentOutput",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Vertex Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AGENTE EXECUTOR",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "AGENTE EXECUTOR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON_CORTAR_VIDEO": {
+      "main": [
+        [
+          {
+            "node": "Reação_CORTAR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "agentOutput": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "",
+  "meta": {
+    "instanceId": ""
+  },
+  "id": "",
+  "tags": []
+}
